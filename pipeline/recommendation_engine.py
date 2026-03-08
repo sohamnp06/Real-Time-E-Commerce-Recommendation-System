@@ -8,7 +8,7 @@ kmeans = pickle.load(open("models\customer_kmeans.pkl", "rb"))
 knn = pickle.load(open("models\product_recommender_model.pkl", "rb"))
 product_similarity = pickle.load(open("models\product_similarity_matrix.pkl", "rb"))
 
-data = pd.read_csv("data/amazonSale.csv")
+data = pd.read_csv("data/amazonSale.csv", encoding="latin1")
 
 
 def get_customer_cluster(customer_features):

@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from pipeline.recommendation_engine import recommend_products
-from database import get_connection
+from database.database import get_connection
 
 app = Flask(__name__)
 
