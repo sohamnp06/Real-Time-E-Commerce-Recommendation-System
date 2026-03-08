@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Recommended Products</title>
+</head>
+
+<body>
+
+<h2>Recommended Products</h2>
+
+<p><b>Category:</b> {{ category }}</p>
+<p><b>Sub Category:</b> {{ sub_category }}</p>
+
+<h3>Suggestions</h3>
+
+<ul>
+
+{% for product in recommendations %}
+
+<li>{{ product }}</li>
+
+{% endfor %}
+
+</ul>
+
+<br>
+
+<button onclick="location.href='/products'">Back</button>
+
+</body>
+</html>

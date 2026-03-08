@@ -92,12 +92,12 @@ def recommend():
 
     recommendations = recommend_products(category, sub_category)
 
-    return jsonify({
-        "category": category,
-        "sub_category": sub_category,
-        "recommended_products": list(recommendations)
-    })
-
+    return render_template(
+        "recommendations.html",
+        category=category,
+        sub_category=sub_category,
+        recommendations=recommendations
+    )
 # -----------------------------
 # CART PAGE
 # -----------------------------
