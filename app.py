@@ -15,7 +15,7 @@ def home():
 # -----------------------------
 # SIGNUP PAGE
 # -----------------------------
-@app.route("/signup", methods=["GET", "POST"])
+@app.route("/signup", methods=["GET","POST"])
 def signup():
 
     if request.method == "POST":
@@ -39,11 +39,9 @@ def signup():
         conn.commit()
         conn.close()
 
-        return redirect(url_for("login"))
+        return redirect("/login")
 
     return render_template("signup.html")
-
-
 # -----------------------------
 # LOGIN PAGE
 # -----------------------------
@@ -68,13 +66,12 @@ def login():
         conn.close()
 
         if user:
-            return redirect(url_for("products"))
+            return redirect("/products")
 
         else:
-            return "Invalid Login"
+            return "Invalid Email or Password"
 
     return render_template("login.html")
-
 
 # -----------------------------
 # PRODUCT PAGE
@@ -83,24 +80,23 @@ def login():
 def products():
     return render_template("products.html")
 
-
 # -----------------------------
 # RECOMMENDATION API
 # -----------------------------
+
 @app.route("/recommend", methods=["POST"])
 def recommend():
 
-    data = request.json
+    category = request.form["category"]
+    sub_category = request.form["sub_category"]
 
-    customer_vector = data["customer_vector"]
-    product_id = data["product_id"]
-
-    recommendations = recommend_products(customer_vector, product_id)
+    recommendations = recommend_products(category, sub_category)
 
     return jsonify({
+        "category": category,
+        "sub_category": sub_category,
         "recommended_products": list(recommendations)
     })
-
 
 # -----------------------------
 # CART PAGE

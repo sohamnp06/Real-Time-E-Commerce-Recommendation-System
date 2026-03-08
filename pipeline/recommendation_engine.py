@@ -35,13 +35,13 @@ def get_similar_products(product_id):
 
     return data.iloc[product_indices]['Product Name'].values
 
+def recommend_products(category, sub_category):
 
-def recommend_products(customer_vector, product_id):
+    filtered = data[
+        (data["Category"] == category) &
+        (data["Sub-Category"] == sub_category)
+    ]
 
-    cluster = get_customer_cluster(customer_vector)
+    recommendations = filtered["Product Name"].head(10)
 
-    similar_customers = get_similar_customers(customer_vector)
-
-    product_recommendations = get_similar_products(product_id)
-
-    return product_recommendations
+    return recommendations

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Select Product Category</title>
+
+<script>
+
+function updateSubCategories(){
+
+    var category = document.getElementById("category").value;
+    var subCategory = document.getElementById("sub_category");
+
+    subCategory.innerHTML = "";
+
+    var options = [];
+
+    if(category === "Office Supplies"){
+        options = ["Binders","Paper","Storage","Art","Labels","Envelopes","Fasteners","Supplies"];
+    }
+
+    else if(category === "Furniture"){
+        options = ["Chairs","Tables","Bookcases","Furnishings"];
+    }
+
+    else if(category === "Technology"){
+        options = ["Phones","Accessories","Appliances","Machines"];
+    }
+
+    for(var i=0;i<options.length;i++){
+        var opt = document.createElement("option");
+        opt.value = options[i];
+        opt.innerHTML = options[i];
+        subCategory.appendChild(opt);
+    }
+
+}
+
+</script>
+
+</head>
+
+<body>
+
+<h2>Select Category</h2>
+
+<form action="/recommend" method="POST">
+
+<label>Category</label><br>
+
+<select name="category" id="category" onchange="updateSubCategories()" required>
+
+<option value="">Select Category</option>
+<option value="Office Supplies">Office Supplies</option>
+<option value="Furniture">Furniture</option>
+<option value="Technology">Technology</option>
+
+</select>
+
+<br><br>
+
+<label>Sub Category</label><br>
+
+<select name="sub_category" id="sub_category" required>
+<option value="">Select Sub Category</option>
+</select>
+
+<br><br>
+
+<button type="submit">Get Recommendations</button>
+
+</form>
+
+<br>
+
+<button onclick="history.back()">Back</button>
+
+</body>
+</html>
