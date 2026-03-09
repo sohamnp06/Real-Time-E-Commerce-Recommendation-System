@@ -1,34 +1,46 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Billing</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
 <h2>Billing</h2>
 
-<h3>Items</h3>
+<table>
 
-<ul>
+<tr>
+<th>Product</th>
+<th>Price</th>
+<th>Quantity</th>
+<th>Subtotal</th>
+</tr>
 
-{% for item in cart %}
+{% for item in items %}
 
-<li>{{ item }}</li>
+<tr>
+
+<td>{{ item.name }}</td>
+
+<td>₹ {{ item.price }}</td>
+
+<td>{{ item.qty }}</td>
+
+<td>₹ {{ item.subtotal }}</td>
+
+</tr>
 
 {% endfor %}
 
-</ul>
+</table>
 
-<br>
+<h3>Total Amount: ₹ {{ total }}</h3>
 
 <form action="/place_order" method="POST">
 
-<label>Select Payment Method</label><br>
+<label>Select Payment Method</label><br><br>
 
 <select name="payment_method">
 
-<option value="Cash">Cash</option>
+<option value="Cash">Cash on Delivery</option>
+
 <option value="Online">Online Payment</option>
 
 </select>
@@ -41,7 +53,8 @@
 
 <br>
 
-<button onclick="location.href='/cart'">Back</button>
+<a href="/cart">
+<button>Back to Cart</button>
+</a>
 
-</body>
-</html>
+{% endblock %}

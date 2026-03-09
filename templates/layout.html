@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Smart Recommendation Store</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<header>
+
+<h1>Smart Recommendation Store</h1>
+
+<div>
+    
+<a href="/cart">
+🛒 Cart ({{ session.get('cart', {}) | length }})
+</a>
+
+<a href="/orders">Orders</a>
+
+<a href="/logout">Logout</a>
+
+</div>
+
+</header>
+
+<div class="container">
+
+{% block content %}
+
+{% endblock %}
+
+</div>
+
+</body>
+
+</html>

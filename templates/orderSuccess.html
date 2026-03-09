@@ -1,18 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Order Placed</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
-<h2>Order Placed Successfully</h2>
+<h2>Order Placed Successfully 🎉</h2>
 
-<a href="/products">Continue Shopping</a>
+<p>Your order has been placed successfully.</p>
+
+<br>
+
+<a href="/">
+<button>Continue Shopping</button>
+</a>
 
 <br><br>
 
-<a href="/orders">View My Orders</a>
+<a href="/orders">
+<button>View My Orders</button>
+</a>
 
-</body>
-</html>
+{% endblock %}

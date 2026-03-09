@@ -1,45 +1,42 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Recommended Products</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
 <h2>Recommended Products</h2>
 
 <p><b>Category:</b> {{ category }}</p>
 <p><b>Sub Category:</b> {{ sub_category }}</p>
 
-<ul>
+<div class="product-grid">
 
 {% for product in recommendations %}
 
-<li>
+<div class="card">
 
-{{ product[1] }}
+<img src="{{ url_for('static', filename='images/product.png') }}">
 
-<form action="/add_to_cart" method="POST" style="display:inline;">
+<p class="product-name">{{ product[1] }}</p>
+
+<p class="price">₹ 100</p>
+
+<form action="/add_to_cart" method="POST">
 
 <input type="hidden" name="product_id" value="{{ product[0] }}">
 
-<button type="submit">Add to Cart</button>
+<button>Add to Cart</button>
 
 </form>
 
-</li>
+</div>
 
 {% endfor %}
 
-</ul>
+</div>
 
 <br>
 
-<a href="/cart">View Cart</a>
+<a href="/products">
+<button>Back</button>
+</a>
 
-<br><br>
-
-<button onclick="location.href='/products'">Back</button>
-
-</body>
-</html>
+{% endblock %}

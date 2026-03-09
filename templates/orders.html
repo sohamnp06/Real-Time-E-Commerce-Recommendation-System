@@ -1,26 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>My Orders</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
 <h2>My Previous Orders</h2>
 
-<ul>
+<table>
+
+<tr>
+<th>Order ID</th>
+<th>Date</th>
+</tr>
 
 {% for order in orders %}
 
-<li>Order ID: {{ order[0] }} | Date: {{ order[1] }}</li>
+<tr>
+
+<td>{{ order[0] }}</td>
+
+<td>{{ order[1] }}</td>
+
+</tr>
 
 {% endfor %}
 
-</ul>
+</table>
 
 <br>
 
-<a href="/products">Back</a>
+<a href="/">
+<button>Back to Home</button>
+</a>
 
-</body>
-</html>
+{% endblock %}

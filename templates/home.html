@@ -1,18 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>E-Commerce Recommendation System</title>
-</head>
+{% extends "layout.html" %}
 
-<body>
+{% block content %}
 
-<h1>Welcome to the Store</h1>
+<h2>Recommended For You</h2>
 
-<button onclick="location.href='/login'">Login</button>
+<div class="product-grid">
 
-<button onclick="location.href='/signup'">Sign Up</button>
+{% for product in products %}
 
-<button onclick="window.close()">Exit</button>
+<div class="card">
 
-</body>
-</html>
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<form action="/add_to_cart" method="POST">
+
+<input type="hidden" name="product_id" value="{{ product[0] }}">
+
+<button>Add to Cart</button>
+
+</form>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endblock %}

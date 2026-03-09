@@ -3,6 +3,7 @@ print("hello")
 import pickle
 import pandas as pd
 import numpy as np
+from database.database import get_connection
 
 kmeans = pickle.load(open("models\customer_kmeans.pkl", "rb"))
 knn = pickle.load(open("models\product_recommender_model.pkl", "rb"))
@@ -35,14 +36,59 @@ def get_similar_products(product_id):
 
     return data.iloc[product_indices]['Product Name'].values
 
-def recommend_products(category, sub_category):
+def recommend_products(category, sub_category, customer_id=None, cart=[]):
 
     filtered = data[
         (data["Category"] == category) &
         (data["Sub-Category"] == sub_category)
     ]
 
-    # return both id and name
-    recommendations = filtered[["Product ID", "Product Name"]].head(10)
+    recommendations = filtered[["Product ID","Product Name"]].head(20)
 
-    return recommendations.values.tolist()
+    # remove items already in cart
+    if cart:
+        recommendations = recommendations[
+            ~recommendations["Product ID"].isin(cart)
+        ]
+
+    # remove items user already purchased
+    if customer_id:
+
+        history = get_user_history(customer_id)
+
+        recommendations = recommendations[
+            ~recommendations["Product ID"].isin(history)
+        ]
+
+    return recommendations.head(10).values.tolist()
+
+def customers_also_bought(product_id):
+
+    similar_products = product_similarity[product_id]
+
+    recommended = sorted(
+        similar_products,
+        key=lambda x: x[1],
+        reverse=True
+    )[1:6]
+
+    return recommended
+
+def get_user_history(customer_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT product_id
+    FROM order_items oi
+    JOIN orders o
+    ON oi.order_id = o.order_id
+    WHERE o.customer_id = %s
+    """,(customer_id,))
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    return [r[0] for r in rows]

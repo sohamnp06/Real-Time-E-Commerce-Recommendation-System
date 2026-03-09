@@ -1,7 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Select Product Category</title>
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Select Category</h2>
+
+<form action="/recommend" method="POST">
+
+<label>Category</label><br>
+
+<select name="category" id="category" onchange="updateSubCategories()" required>
+
+<option value="">Select Category</option>
+<option value="Office Supplies">Office Supplies</option>
+<option value="Furniture">Furniture</option>
+<option value="Technology">Technology</option>
+
+</select>
+
+<br><br>
+
+<label>Sub Category</label><br>
+
+<select name="sub_category" id="sub_category" required>
+
+<option value="">Select Sub Category</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">Get Recommendations</button>
+
+</form>
+
+<br>
+
+<a href="/">
+<button>Back</button>
+</a>
 
 <script>
 
@@ -27,9 +63,12 @@ function updateSubCategories(){
     }
 
     for(var i=0;i<options.length;i++){
+
         var opt = document.createElement("option");
+
         opt.value = options[i];
         opt.innerHTML = options[i];
+
         subCategory.appendChild(opt);
     }
 
@@ -37,46 +76,4 @@ function updateSubCategories(){
 
 </script>
 
-</head>
-
-<body>
-    
-<a href="/logout" style="float:right;">
-<button>Logout</button>
-</a>
-
-<h2>Select Category</h2>
-
-<form action="/recommend" method="POST">
-
-<label>Category</label><br>
-
-<select name="category" id="category" onchange="updateSubCategories()" required>
-
-<option value="">Select Category</option>
-<option value="Office Supplies">Office Supplies</option>
-<option value="Furniture">Furniture</option>
-<option value="Technology">Technology</option>
-
-</select>
-
-<br><br>
-
-<label>Sub Category</label><br>
-
-<select name="sub_category" id="sub_category" required>
-<option value="">Select Sub Category</option>
-</select>
-
-<br><br>
-
-<button type="submit">Get Recommendations</button>
-
-</form>
-
-<br>
-
-<button onclick="history.back()">Back</button>
-
-</body>
-</html>
+{% endblock %}
