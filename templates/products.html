@@ -2,13 +2,23 @@
 
 {% block content %}
 
-<h2>Select Category</h2>
+<h2>Recommended Products</h2>
+
+<button onclick="location.reload()" class="refresh-btn">
+Refresh Products
+</button>
+
+<button onclick="toggleFilter()" class="filter-btn">
+Filter Products
+</button>
+
+<div id="filterBox" style="display:none">
 
 <form action="/recommend" method="POST">
 
-<label>Category</label><br>
+<label>Category</label>
 
-<select name="category" id="category" onchange="updateSubCategories()" required>
+<select name="category" id="category" onchange="updateSubCategories()">
 
 <option value="">Select Category</option>
 <option value="Office Supplies">Office Supplies</option>
@@ -19,12 +29,10 @@
 
 <br><br>
 
-<label>Sub Category</label><br>
+<label>Sub Category</label>
 
-<select name="sub_category" id="sub_category" required>
-
+<select name="sub_category" id="sub_category">
 <option value="">Select Sub Category</option>
-
 </select>
 
 <br><br>
@@ -33,44 +41,79 @@
 
 </form>
 
-<br>
+</div>
 
-<a href="/">
-<button>Back</button>
-</a>
+
+<div class="product-grid">
+
+{% for product in products %}
+
+<div class="card">
+
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<p class="price">₹ {{ "%.2f"|format(product[2]) }}</p>
+
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
 
 <script>
 
+function toggleFilter(){
+
+var box=document.getElementById("filterBox");
+
+if(box.style.display==="none"){
+box.style.display="block";
+}
+else{
+box.style.display="none";
+}
+
+}
+
+
 function updateSubCategories(){
 
-    var category = document.getElementById("category").value;
-    var subCategory = document.getElementById("sub_category");
+var category=document.getElementById("category").value;
+var subCategory=document.getElementById("sub_category");
 
-    subCategory.innerHTML = "";
+subCategory.innerHTML="";
 
-    var options = [];
+var options=[];
 
-    if(category === "Office Supplies"){
-        options = ["Binders","Paper","Storage","Art","Labels","Envelopes","Fasteners","Supplies"];
-    }
+if(category==="Office Supplies"){
+options=["Binders","Paper","Storage","Art","Labels","Envelopes","Fasteners","Supplies"];
+}
 
-    else if(category === "Furniture"){
-        options = ["Chairs","Tables","Bookcases","Furnishings"];
-    }
+else if(category==="Furniture"){
+options=["Chairs","Tables","Bookcases","Furnishings"];
+}
 
-    else if(category === "Technology"){
-        options = ["Phones","Accessories","Appliances","Machines"];
-    }
+else if(category==="Technology"){
+options=["Phones","Accessories","Appliances","Machines"];
+}
 
-    for(var i=0;i<options.length;i++){
+for(var i=0;i<options.length;i++){
 
-        var opt = document.createElement("option");
+var opt=document.createElement("option");
 
-        opt.value = options[i];
-        opt.innerHTML = options[i];
+opt.value=options[i];
+opt.innerHTML=options[i];
 
-        subCategory.appendChild(opt);
-    }
+subCategory.appendChild(opt);
+
+}
 
 }
 

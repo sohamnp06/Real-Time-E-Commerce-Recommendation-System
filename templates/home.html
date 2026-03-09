@@ -2,6 +2,169 @@
 
 {% block content %}
 
+<h2>Browse Products</h2>
+
+<button onclick="location.reload()" class="filter-btn">
+Refresh Products
+</button>
+
+<button onclick="toggleFilter()" class="filter-btn">
+Filter Products
+</button>
+
+<div id="filterBox" style="display:none">
+
+<form action="/recommend" method="POST">
+
+<label>Category</label>
+
+<select name="category" id="category" onchange="updateSubCategories()">
+
+<option value="">Select Category</option>
+<option value="Office Supplies">Office Supplies</option>
+<option value="Furniture">Furniture</option>
+<option value="Technology">Technology</option>
+
+</select>
+
+<br><br>
+
+<label>Sub Category</label>
+
+<select name="sub_category" id="sub_category">
+<option value="">Select Sub Category</option>
+</select>
+
+<br><br>
+
+<button type="submit">Get Recommendations</button>
+
+</form>
+
+</div>
+
+
+
+{% if previous %}
+
+<h2>Previously Purchased</h2>
+
+<div class="product-grid">
+
+{% for product in previous %}
+
+<div class="card">
+
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<p class="price">₹ {{ "%.2f"|format(product[2] or 0) }}</p>
+
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
+{% if cluster_products %}
+
+<h2>Customers Like You Bought</h2>
+
+<div class="product-grid">
+
+{% for product in cluster_products %}
+
+<div class="card">
+
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<p class="price">₹ {{ "%.2f"|format(product[2] or 0) }}</p>
+
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
+{% if also_bought %}
+
+<h2>Customers Also Bought</h2>
+
+<div class="product-grid">
+
+{% for product in also_bought %}
+
+<div class="card">
+
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<p class="price">₹ {{ "%.2f"|format(product[2] or 0) }}</p>
+
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
+{% if trending %}
+
+<h2>Trending Now</h2>
+
+<div class="product-grid">
+
+{% for product in trending %}
+
+<div class="card">
+
+<img src="{{ url_for('static', filename='images/product.png') }}">
+
+<p>{{ product[1] }}</p>
+
+<p class="price">₹ {{ "%.2f"|format(product[2] or 0) }}</p>
+
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+
+
+
 <h2>Recommended For You</h2>
 
 <div class="product-grid">
@@ -14,18 +177,67 @@
 
 <p>{{ product[1] }}</p>
 
-<form action="/add_to_cart" method="POST">
+<p class="price">₹ {{ "%.2f"|format(product[2] or 0) }}</p>
 
-<input type="hidden" name="product_id" value="{{ product[0] }}">
-
-<button>Add to Cart</button>
-
-</form>
+<button onclick="addToCart('{{ product[0] }}')">
+Add to Cart
+</button>
 
 </div>
 
 {% endfor %}
 
 </div>
+
+
+<script>
+
+function toggleFilter(){
+
+var box = document.getElementById("filterBox");
+
+if(box.style.display === "none"){
+box.style.display = "block";
+}
+else{
+box.style.display = "none";
+}
+
+}
+
+function updateSubCategories(){
+
+var category = document.getElementById("category").value;
+var subCategory = document.getElementById("sub_category");
+
+subCategory.innerHTML = "";
+
+var options = [];
+
+if(category === "Office Supplies"){
+options = ["Binders","Paper","Storage","Art","Labels","Envelopes","Fasteners","Supplies"];
+}
+
+else if(category === "Furniture"){
+options = ["Chairs","Tables","Bookcases","Furnishings"];
+}
+
+else if(category === "Technology"){
+options = ["Phones","Accessories","Appliances","Machines"];
+}
+
+for(var i=0;i<options.length;i++){
+
+var opt = document.createElement("option");
+opt.value = options[i];
+opt.innerHTML = options[i];
+
+subCategory.appendChild(opt);
+
+}
+
+}
+
+</script>
 
 {% endblock %}

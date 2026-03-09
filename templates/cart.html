@@ -4,7 +4,19 @@
 
 <h2>Your Cart</h2>
 
-<table>
+{% if items|length == 0 %}
+
+<h3>Your Cart is Empty 🛒</h3>
+
+<p>Add some products to start shopping.</p>
+
+<a href="/products">
+<button class="checkout-btn">Browse Products</button>
+</a>
+
+{% else %}
+
+<table class="cart-table">
 
 <tr>
 <th>Product</th>
@@ -19,7 +31,7 @@
 
 <td>{{ item.name }}</td>
 
-<td>₹ {{ item.price }}</td>
+<td>₹ {{ "%.2f"|format(item.price) }}</td>
 
 <td>
 
@@ -27,23 +39,23 @@
 
 <input type="hidden" name="product_id" value="{{ item.id }}">
 
-<button>-</button>
+<button class="qty-btn">-</button>
 
 </form>
 
-{{ item.qty }}
+<span class="qty">{{ item.qty }}</span>
 
 <form action="/add_to_cart" method="POST" style="display:inline">
 
 <input type="hidden" name="product_id" value="{{ item.id }}">
 
-<button>+</button>
+<button class="qty-btn">+</button>
 
 </form>
 
 </td>
 
-<td>₹ {{ item.subtotal }}</td>
+<td>₹ {{ "%.2f"|format(item.subtotal) }}</td>
 
 </tr>
 
@@ -51,6 +63,14 @@
 
 </table>
 
-<h3>Total: ₹ {{ total }}</h3>
+<h3>Total: ₹ {{ "%.2f"|format(total) }}</h3>
+
+<br>
+
+<a href="/billing">
+<button class="checkout-btn">Proceed To Checkout</button>
+</a>
+
+{% endif %}
 
 {% endblock %}

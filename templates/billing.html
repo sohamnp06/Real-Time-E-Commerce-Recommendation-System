@@ -4,7 +4,7 @@
 
 <h2>Billing</h2>
 
-<table>
+<table class="cart-table">
 
 <tr>
 <th>Product</th>
@@ -19,11 +19,11 @@
 
 <td>{{ item.name }}</td>
 
-<td>₹ {{ item.price }}</td>
+<td>₹ {{ "%.2f"|format(item.price) }}</td>
 
 <td>{{ item.qty }}</td>
 
-<td>₹ {{ item.subtotal }}</td>
+<td>₹ {{ "%.2f"|format(item.subtotal) }}</td>
 
 </tr>
 
@@ -31,30 +31,27 @@
 
 </table>
 
-<h3>Total Amount: ₹ {{ total }}</h3>
+<h3>Total: ₹ {{ "%.2f"|format(total) }}</h3>
+
+<br>
 
 <form action="/place_order" method="POST">
 
-<label>Select Payment Method</label><br><br>
+<label>Select Payment Method</label>
 
 <select name="payment_method">
 
-<option value="Cash">Cash on Delivery</option>
-
+<option value="Cash">Cash On Delivery</option>
 <option value="Online">Online Payment</option>
 
 </select>
 
 <br><br>
 
-<button type="submit">Place Order</button>
+<button class="checkout-btn">
+Place Order
+</button>
 
 </form>
-
-<br>
-
-<a href="/cart">
-<button>Back to Cart</button>
-</a>
 
 {% endblock %}

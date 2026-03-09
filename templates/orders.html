@@ -2,9 +2,15 @@
 
 {% block content %}
 
-<h2>My Previous Orders</h2>
+<h2>My Orders</h2>
 
-<table>
+{% if orders|length == 0 %}
+
+<p>You have not placed any orders yet.</p>
+
+{% else %}
+
+<table class="cart-table">
 
 <tr>
 <th>Order ID</th>
@@ -14,21 +20,14 @@
 {% for order in orders %}
 
 <tr>
-
 <td>{{ order[0] }}</td>
-
 <td>{{ order[1] }}</td>
-
 </tr>
 
 {% endfor %}
 
 </table>
 
-<br>
-
-<a href="/">
-<button>Back to Home</button>
-</a>
+{% endif %}
 
 {% endblock %}

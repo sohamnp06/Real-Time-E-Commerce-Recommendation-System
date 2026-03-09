@@ -1,10 +1,13 @@
 print("hello")
 
 import pickle
+import random
 import pandas as pd
 import numpy as np
 from database.database import get_connection
+import random
 
+product_similarity = pickle.load(open("models\product_similarity_matrix.pkl", "rb"))
 kmeans = pickle.load(open("models\customer_kmeans.pkl", "rb"))
 knn = pickle.load(open("models\product_recommender_model.pkl", "rb"))
 product_similarity = pickle.load(open("models\product_similarity_matrix.pkl", "rb"))
@@ -64,15 +67,43 @@ def recommend_products(category, sub_category, customer_id=None, cart=[]):
 
 def customers_also_bought(product_id):
 
+    if product_id not in product_similarity:
+        return []
+
     similar_products = product_similarity[product_id]
 
-    recommended = sorted(
-        similar_products,
+    # sort similarity scores
+    sorted_products = sorted(
+        similar_products.items(),
         key=lambda x: x[1],
         reverse=True
-    )[1:6]
+    )
 
-    return recommended
+    # skip first (same product)
+    recommended = sorted_products[1:6]
+
+    product_ids = [p[0] for p in recommended]
+
+    if not product_ids:
+        return []
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        SELECT product_id, product_name, price
+        FROM products
+        WHERE product_id = ANY(%s)
+        """,
+        (product_ids,)
+    )
+
+    results = cursor.fetchall()
+
+    conn.close()
+
+    return results
 
 def get_user_history(customer_id):
 
@@ -92,3 +123,142 @@ def get_user_history(customer_id):
     conn.close()
 
     return [r[0] for r in rows]
+
+def get_trending_products():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT p.product_id, p.product_name, p.price, COUNT(*) as purchases
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        GROUP BY p.product_id, p.product_name, p.price
+        ORDER BY purchases DESC
+        LIMIT 8
+    """)
+
+    trending = cursor.fetchall()
+
+    conn.close()
+
+    return trending
+
+
+def cluster_recommendations(customer_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT segment
+    FROM customers
+    WHERE customer_id=%s
+    """,(customer_id,))
+
+    cluster = cursor.fetchone()
+
+    if not cluster:
+        return []
+
+    cluster = cluster[0]
+
+    cursor.execute("""
+    SELECT product_id, product_name, price
+    FROM products
+    ORDER BY RANDOM()
+    LIMIT 8
+    """)
+
+    products = cursor.fetchall()
+
+    conn.close()
+
+    return products
+
+def hybrid_recommendations(customer_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # get customer cluster
+    cursor.execute("""
+    SELECT segment
+    FROM customers
+    WHERE customer_id=%s
+    """,(customer_id,))
+
+    cluster = cursor.fetchone()
+
+    if cluster:
+        cluster = cluster[0]
+    else:
+        cluster = 0
+
+    # trending products
+    cursor.execute("""
+    SELECT p.product_id, p.product_name, p.price,
+           COUNT(*) as popularity
+    FROM order_items oi
+    JOIN products p ON oi.product_id=p.product_id
+    GROUP BY p.product_id, p.product_name, p.price
+    ORDER BY popularity DESC
+    LIMIT 50
+    """)
+
+    products = cursor.fetchall()
+
+    ranked_products = []
+
+    for p in products:
+
+        product_id = p[0]
+        popularity = p[3]
+
+        similarity_score = 0
+        cluster_score = 0
+
+        if product_id in product_similarity:
+            similarity_score = product_similarity[product_id].mean()
+
+        if cluster == 0:
+            cluster_score = 0.2
+        else:
+            cluster_score = 0.4
+
+        score = (
+            0.5 * similarity_score +
+            0.3 * cluster_score +
+            0.2 * popularity
+        )
+
+        ranked_products.append((p[0],p[1],p[2],score))
+
+    ranked_products = sorted(ranked_products, key=lambda x: x[3], reverse=True)
+
+    conn.close()
+
+    top_pool = ranked_products[:50]
+
+    return random.sample(top_pool, min(12, len(top_pool)))
+
+def get_product_index():
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+    SELECT product_id
+    FROM products
+    ORDER BY product_id
+    """)
+
+    rows = cursor.fetchall()
+
+    conn.close()
+
+    product_ids = [r[0] for r in rows]
+
+    product_index = {pid:i for i,pid in enumerate(product_ids)}
+
+    return product_index
