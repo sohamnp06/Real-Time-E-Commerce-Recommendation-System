@@ -42,6 +42,7 @@ def recommend_products(category, sub_category):
         (data["Sub-Category"] == sub_category)
     ]
 
-    recommendations = filtered["Product Name"].head(10)
+    # return both id and name
+    recommendations = filtered[["Product ID", "Product Name"]].head(10)
 
-    return recommendations
+    return recommendations.values.tolist()

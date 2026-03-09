@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>My Orders</title>
+</head>
+
+<body>
+
+<h2>My Previous Orders</h2>
+
+<ul>
+
+{% for order in orders %}
+
+<li>Order ID: {{ order[0] }} | Date: {{ order[1] }}</li>
+
+{% endfor %}
+
+</ul>
+
+<br>
+
+<a href="/products">Back</a>
+
+</body>
+</html>

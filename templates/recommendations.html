@@ -11,19 +11,33 @@
 <p><b>Category:</b> {{ category }}</p>
 <p><b>Sub Category:</b> {{ sub_category }}</p>
 
-<h3>Suggestions</h3>
-
 <ul>
 
 {% for product in recommendations %}
 
-<li>{{ product }}</li>
+<li>
+
+{{ product[1] }}
+
+<form action="/add_to_cart" method="POST" style="display:inline;">
+
+<input type="hidden" name="product_id" value="{{ product[0] }}">
+
+<button type="submit">Add to Cart</button>
+
+</form>
+
+</li>
 
 {% endfor %}
 
 </ul>
 
 <br>
+
+<a href="/cart">View Cart</a>
+
+<br><br>
 
 <button onclick="location.href='/products'">Back</button>
 

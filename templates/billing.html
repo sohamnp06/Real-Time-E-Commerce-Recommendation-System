@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Billing</title>
+</head>
+
+<body>
+
+<h2>Billing</h2>
+
+<h3>Items</h3>
+
+<ul>
+
+{% for item in cart %}
+
+<li>{{ item }}</li>
+
+{% endfor %}
+
+</ul>
+
+<br>
+
+<form action="/place_order" method="POST">
+
+<label>Select Payment Method</label><br>
+
+<select name="payment_method">
+
+<option value="Cash">Cash</option>
+<option value="Online">Online Payment</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">Place Order</button>
+
+</form>
+
+<br>
+
+<button onclick="location.href='/cart'">Back</button>
+
+</body>
+</html>

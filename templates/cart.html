@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Your Cart</title>
+</head>
+
+<body>
+
+<h2>Your Cart</h2>
+
+<ul>
+
+{% for item in cart %}
+
+<li>
+
+{{ item }}
+
+<form action="/remove_from_cart" method="POST" style="display:inline;">
+
+<input type="hidden" name="product" value="{{ item }}">
+
+<button type="submit">Remove</button>
+
+</form>
+
+</li>
+
+{% endfor %}
+
+</ul>
+
+<br>
+
+<a href="/products">Continue Shopping</a>
+
+<br><br>
+
+<a href="/billing">Proceed to Billing</a>
+
+</body>
+</html>
