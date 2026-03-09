@@ -12,10 +12,10 @@ class Config:
     """Central application configuration loaded from environment variables."""
 
     # Flask / session
-    SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key-change-me")
+    SECRET_KEY = os.getenv("SECRET_KEY")
 
     # Database
-    DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_NAME = os.getenv("DB_NAME", "ecommerce_db")
-    DB_USER = os.getenv("DB_USER", "postgres")
-    DB_PASSWORD = os.getenv("DB_PASSWORD", "password")
+    DB_HOST = os.getenv("DB_HOST")
+    DB_NAME = os.getenv("DB_NAME")
+    DB_USER = os.getenv("DB_USER")
+    DB_PASSWORD = os.getenv("DB_PASSWORD")

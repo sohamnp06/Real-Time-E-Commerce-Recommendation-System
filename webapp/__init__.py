@@ -18,7 +18,7 @@ def create_app(config_class=Config):
     app.config.from_object(config_class)
 
     # Ensure secret key is set for session management
-    app.secret_key = app.config.get("SECRET_KEY") or "dev-secret-key-change-me"
+    app.secret_key = app.config["SECRET_KEY"]
 
     # Register blueprints
     app.register_blueprint(main_bp)
