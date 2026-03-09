@@ -66,8 +66,10 @@ def login():
         conn.close()
 
         if user:
-            return redirect("/products")
+            session["customer_id"] = user[0]
 
+            return redirect("/products")
+        
         else:
             return "Invalid Email or Password"
 
@@ -174,15 +176,16 @@ def place_order():
 
     cart = session.get("cart", [])
 
+    customer_id = session.get("customer_id")
+
     conn = get_connection()
     cursor = conn.cursor()
 
-    # create order
     cursor.execute("""
     INSERT INTO orders(customer_id,total_amount,payment_method)
     VALUES(%s,%s,%s)
     RETURNING order_id
-    """,(1, len(cart)*100, payment_method))
+    """,(customer_id, len(cart)*100, payment_method))
 
     order_id = cursor.fetchone()[0]
 
@@ -203,20 +206,29 @@ def place_order():
 @app.route("/orders")
 def orders():
 
+    customer_id = session.get("customer_id")
+
     conn = get_connection()
     cursor = conn.cursor()
 
     cursor.execute("""
     SELECT order_id, order_date
     FROM orders
-    WHERE customer_id = 1
-    """)
+    WHERE customer_id=%s
+    """,(customer_id,))
 
     orders = cursor.fetchall()
 
     conn.close()
 
     return render_template("orders.html", orders=orders)
+
+@app.route("/logout")
+def logout():
+
+    session.clear()
+
+    return redirect("/")
 
 # -----------------------------
 # RUN APP
