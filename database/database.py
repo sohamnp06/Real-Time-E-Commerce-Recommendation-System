@@ -1,1 +1,1 @@
-from webapp.db.database import get_connection  # re-export for backward compatibility
+from webapp.db.database import get_connection  

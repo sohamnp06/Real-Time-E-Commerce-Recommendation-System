@@ -3,13 +3,11 @@ import numpy as np
 
 from database.database import get_connection
 
-# load trained KMeans model
 kmeans = pickle.load(open("models/customer_kmeans.pkl","rb"))
 
 conn = get_connection()
 cursor = conn.cursor()
 
-# get customer features
 cursor.execute("""
 SELECT
     c.customer_id,

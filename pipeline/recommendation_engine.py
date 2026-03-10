@@ -48,13 +48,11 @@ def recommend_products(category, sub_category, customer_id=None, cart=[]):
 
     recommendations = filtered[["Product ID","Product Name"]].head(20)
 
-    # remove items already in cart
     if cart:
         recommendations = recommendations[
             ~recommendations["Product ID"].isin(cart)
         ]
 
-    # remove items user already purchased
     if customer_id:
 
         history = get_user_history(customer_id)
@@ -72,14 +70,12 @@ def customers_also_bought(product_id):
 
     similar_products = product_similarity[product_id]
 
-    # sort similarity scores
     sorted_products = sorted(
         similar_products.items(),
         key=lambda x: x[1],
         reverse=True
     )
-
-    # skip first (same product)
+    
     recommended = sorted_products[1:6]
 
     product_ids = [p[0] for p in recommended]
@@ -181,7 +177,6 @@ def hybrid_recommendations(customer_id):
     conn = get_connection()
     cursor = conn.cursor()
 
-    # get customer cluster
     cursor.execute("""
     SELECT segment
     FROM customers
@@ -195,7 +190,6 @@ def hybrid_recommendations(customer_id):
     else:
         cluster = 0
 
-    # trending products
     cursor.execute("""
     SELECT p.product_id, p.product_name, p.price,
            COUNT(*) as popularity
