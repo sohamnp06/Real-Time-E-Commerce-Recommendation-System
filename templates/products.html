@@ -50,13 +50,13 @@ Filter Products
 
 <div class="card">
 
-<img src="{{ url_for('static', filename='images/product.png') }}">
+<img src="{{ url_for('static', filename='images/' ~ product.image) }}">
 
-<p>{{ product[1] }}</p>
+<p class="product-name">{{ product.name }}</p>
 
-<p class="price">₹ {{ "%.2f"|format(product[2]) }}</p>
+<p class="price">₹ {{ "%.2f"|format(product.price) }}</p>
 
-<button onclick="addToCart('{{ product[0] }}')">
+<button onclick="addToCart('{{ product.id }}')">
 Add to Cart
 </button>
 

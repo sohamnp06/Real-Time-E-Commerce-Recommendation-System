@@ -111,7 +111,7 @@ def customers_also_bought(product_id):
 
     cursor.execute(
         """
-        SELECT product_id, product_name, price
+        SELECT product_id, product_name, price, sub_category
         FROM products
         WHERE product_id = ANY(%s)
         """,
@@ -130,10 +130,10 @@ def get_trending_products():
 
     cursor.execute(
         """
-        SELECT p.product_id, p.product_name, p.price, COUNT(*) as purchases
+        SELECT p.product_id, p.product_name, p.price, p.sub_category, COUNT(*) as purchases
         FROM order_items oi
         JOIN products p ON oi.product_id = p.product_id
-        GROUP BY p.product_id, p.product_name, p.price
+        GROUP BY p.product_id, p.product_name, p.price, p.sub_category
         ORDER BY purchases DESC
         LIMIT 8
         """
@@ -166,7 +166,7 @@ def cluster_recommendations(customer_id):
 
     cursor.execute(
         """
-        SELECT product_id, product_name, price
+        SELECT product_id, product_name, price, sub_category
         FROM products
         ORDER BY RANDOM()
         LIMIT 8
@@ -200,11 +200,11 @@ def hybrid_recommendations(customer_id):
 
     cursor.execute(
         """
-        SELECT p.product_id, p.product_name, p.price,
+        SELECT p.product_id, p.product_name, p.price, p.sub_category,
                COUNT(*) as popularity
         FROM order_items oi
         JOIN products p ON oi.product_id=p.product_id
-        GROUP BY p.product_id, p.product_name, p.price
+        GROUP BY p.product_id, p.product_name, p.price, p.sub_category
         ORDER BY popularity DESC
         LIMIT 50
         """
@@ -215,7 +215,8 @@ def hybrid_recommendations(customer_id):
     ranked_products = []
     for p in products:
         product_id = p[0]
-        popularity = p[3]
+        # p = (product_id, product_name, price, sub_category, popularity)
+        popularity = p[4]
 
         similarity_score = 0
         cluster_score = 0
@@ -227,9 +228,9 @@ def hybrid_recommendations(customer_id):
         cluster_score = 0.4 if cluster != 0 else 0.2
 
         score = (0.5 * similarity_score) + (0.3 * cluster_score) + (0.2 * popularity)
-        ranked_products.append((p[0], p[1], p[2], score))
+        ranked_products.append((p[0], p[1], p[2], p[3], score))
 
-    ranked_products = sorted(ranked_products, key=lambda x: x[3], reverse=True)
+    ranked_products = sorted(ranked_products, key=lambda x: x[4], reverse=True)
 
     conn.close()
 
